@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Ilustracion romantica de una pareja</title>
+  <desc id="desc">Dos personas compartiendo un abrazo bajo un corazon.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1724" />
+      <stop offset="1" stop-color="#8d294f" />
+    </linearGradient>
+    <linearGradient id="dress" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d8b7de" />
+      <stop offset="1" stop-color="#7d2348" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1125" fill="url(#bg)" />
+  <circle cx="130" cy="170" r="90" fill="#eb5268" opacity=".22" />
+  <circle cx="770" cy="940" r="180" fill="#d8b7de" opacity=".14" />
+  <path d="M450 250 C380 150 190 225 230 390 C260 510 450 610 450 610 C450 610 640 510 670 390 C710 225 520 150 450 250Z" fill="#eb5268" opacity=".9" />
+  <path d="M270 1125 C278 775 315 650 420 610 C475 590 520 640 550 720 C600 850 645 975 660 1125Z" fill="url(#dress)" />
+  <path d="M420 485 C420 400 480 350 540 395 C594 436 570 540 518 590 C475 630 420 566 420 485Z" fill="#d8b7de" />
+  <path d="M428 450 C430 360 555 345 590 440 C565 414 540 425 515 453 C490 430 460 435 428 450Z" fill="#1d1118" />
+  <path d="M550 1125 C545 850 525 735 470 665 C425 610 345 600 315 670 C275 765 290 930 300 1125Z" fill="#3a2430" />
+  <path d="M350 570 C300 505 218 518 205 606 C195 675 285 730 370 700 C400 688 415 628 350 570Z" fill="#d8b7de" />
+  <path d="M250 580 C238 495 330 462 390 525 C350 515 320 540 300 575 C280 555 266 565 250 580Z" fill="#1d1118" />
+  <path d="M335 650 C390 665 438 660 480 635" fill="none" stroke="#fff7fa" stroke-linecap="round" stroke-width="12" opacity=".8" />
+  <circle cx="485" cy="470" r="7" fill="#1d1118" />
+  <circle cx="545" cy="470" r="7" fill="#1d1118" />
+  <path d="M500 505 Q520 520 540 505" fill="none" stroke="#7d2348" stroke-linecap="round" stroke-width="7" />
+  <circle cx="295" cy="612" r="7" fill="#1d1118" />
+  <circle cx="345" cy="612" r="7" fill="#1d1118" />
+  <path d="M310 643 Q325 653 340 643" fill="none" stroke="#7d2348" stroke-linecap="round" stroke-width="6" />
+  <path d="M80 1010 Q450 930 820 1010" fill="none" stroke="#fff7fa" stroke-width="5" opacity=".35" />
+</svg>
