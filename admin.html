@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1d1118">
+    <title>Panel privado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="site-shell">
+        <a class="page-back" href="index.html" aria-label="Volver al inicio">← Volver</a>
+        <section class="memory-section" id="recuerdo">
+            <div class="memory-heading">
+                <p class="section-kicker">Administración</p>
+                <h2>Panel<br><em>privado.</em></h2>
+                <p>Inicia sesión para guardar textos, subir fotos o descargar el JSON.</p>
+            </div>
+            <form class="admin-login" id="adminLogin">
+                <span class="memory-label">Acceso administrador</span>
+                <input id="adminEmail" type="email" placeholder="Tu correo" required>
+                <input id="adminPassword" type="password" placeholder="Tu contraseña" required>
+                <button class="button button-quiet" type="submit">Entrar</button>
+                <p class="memory-status" id="loginStatus" role="status"></p>
+            </form>
+            <div class="memory-tools" id="memoryTools" hidden>
+                <label class="memory-field">
+                    <span>Recuerdo que quieres modificar</span>
+                    <select id="memorySelect"></select>
+                </label>
+                <div class="admin-letter-editor">
+                    <span class="memory-label">Carta principal</span>
+                    <input id="letterSalutationInput" type="text" placeholder="Saludo de la carta">
+                    <textarea id="letterParagraphOneInput" placeholder="Primer párrafo de la carta"></textarea>
+                    <textarea id="letterParagraphTwoInput" placeholder="Segundo párrafo de la carta"></textarea>
+                    <button class="button button-quiet" id="letterSave" type="button">Guardar carta</button>
+                    <p class="memory-status" id="letterStatus" role="status"></p>
+                </div>
+                <label class="memory-field">
+                    <span>Tu mensaje</span>
+                    <textarea id="memoryText" placeholder="Escribe aquí lo que sientes..."></textarea>
+                </label>
+                <div class="memory-photo">
+                    <span class="memory-label">Una foto especial</span>
+                    <label class="photo-upload" for="photoInput">
+                        <span class="upload-icon" aria-hidden="true">+</span>
+                        <span id="photoLabel">Elegir una foto</span>
+                    </label>
+                    <input id="photoInput" type="file" accept="image/*">
+                    <div class="photo-preview" id="photoPreview" aria-live="polite"></div>
+                </div>
+                <button class="button button-primary memory-save" id="memorySave" type="button">Guardar recuerdo <span aria-hidden="true">♥</span></button>
+                <button class="button button-quiet memory-download" id="memoryDownload" type="button">Descargar JSON <span aria-hidden="true">↓</span></button>
+                <p class="memory-status" id="memoryStatus" role="status"></p>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
