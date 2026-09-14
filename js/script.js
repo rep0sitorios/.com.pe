@@ -143,12 +143,17 @@ adminLogin.addEventListener('submit', async (event) => {
     event.preventDefault();
     loginStatus.textContent = 'Comprobando acceso...';
     const { error } = await supabaseClient.auth.signInWithPassword({
-        email: adminEmail.value,
+        email: adminEmail.value.trim(),
         password: adminPassword.value
     });
 
     if (error) {
-        loginStatus.textContent = 'Correo o contraseña incorrectos.';
+        const errorMessages = {
+            'Invalid login credentials': 'El correo o la contraseña no coinciden.',
+            'Email not confirmed': 'Debes confirmar el correo del usuario en Supabase.',
+            'Too many requests': 'Demasiados intentos. Espera unos minutos y vuelve a probar.'
+        };
+        loginStatus.textContent = errorMessages[error.message] || `No se pudo iniciar sesión: ${error.message}`;
         return;
     }
 
