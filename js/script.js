@@ -24,15 +24,49 @@ const letterParagraphOneInput = document.querySelector('#letterParagraphOneInput
 const letterParagraphTwoInput = document.querySelector('#letterParagraphTwoInput');
 const letterSave = document.querySelector('#letterSave');
 const letterStatus = document.querySelector('#letterStatus');
+const visitsList = document.querySelector('#visitsList');
 let selectedPhoto = null;
 let currentMemoryId = null;
 
 const isAdminRoute = window.location.hash === '#admin' || window.location.pathname.endsWith('/admin.html');
-if (!isAdminRoute) memorySection.hidden = true;
+if (!isAdminRoute && memorySection) memorySection.hidden = true;
 
 const supabaseUrl = 'https://spzmijgoasqwvpvhlrrq.supabase.co';
 const supabaseKey = 'sb_publishable_YPZo0GS3Cfz_Xp6JE9ol9A_37rzZYtf';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function registerPageVisit(page) {
+    const { error } = await supabaseClient.from('visitas').insert({ pagina: page });
+    if (error) console.error('No se pudo registrar la visita:', error);
+}
+
+async function loadVisits() {
+    if (!visitsList) return;
+
+    const { data: visits, error } = await supabaseClient
+        .from('visitas')
+        .select('pagina, visitado_en')
+        .order('visitado_en', { ascending: false })
+        .limit(50);
+
+    if (error) {
+        visitsList.innerHTML = '<p class="memory-status">No se pudieron cargar las visitas.</p>';
+        return;
+    }
+
+    if (!visits.length) {
+        visitsList.innerHTML = '<p class="memory-status">Todavia no hay visitas.</p>';
+        return;
+    }
+
+    visitsList.innerHTML = visits.map((visit) => {
+        const isAdminVisit = visit.pagina === 'admin';
+        const date = new Date(visit.visitado_en).toLocaleString('es-ES');
+        return `<p class="visit-row${isAdminVisit ? ' visit-admin' : ''}"><span>${isAdminVisit ? 'Admin' : visit.pagina}</span><time>${date}</time></p>`;
+    }).join('');
+}
+
+registerPageVisit(isAdminRoute ? 'admin' : 'inicio');
 
 async function loadLetterContent() {
     const { data: letter, error } = await supabaseClient
@@ -77,17 +111,17 @@ function compressPhoto(photo) {
 }
 
 const savedMemory = localStorage.getItem('memoryText');
-if (savedMemory) memoryText.value = savedMemory;
+if (savedMemory && memoryText) memoryText.value = savedMemory;
 
 function showMemory(memory) {
     if (!memory) return;
 
     currentMemoryId = memory.id;
-    memoryText.value = memory.texto || '';
-    photoPreview.innerHTML = memory.foto_url
+    if (memoryText) memoryText.value = memory.texto || '';
+    if (photoPreview) photoPreview.innerHTML = memory.foto_url
         ? `<img src="${memory.foto_url}" alt="Foto guardada en nuestro recuerdo">`
         : '';
-    photoLabel.textContent = memory.foto_url ? 'Foto guardada' : 'Elegir una foto';
+    if (photoLabel) photoLabel.textContent = memory.foto_url ? 'Foto guardada' : 'Elegir una foto';
     selectedPhoto = null;
 }
 
@@ -111,18 +145,23 @@ async function loadSavedMemory() {
     }
 }
 
-loadSavedMemory();
+if (isAdminRoute) {
+    loadSavedMemory();
 
-supabaseClient
-    .channel('recuerdos-en-vivo')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'recuerdos' }, loadSavedMemory)
-    .subscribe();
+    supabaseClient
+        .channel('recuerdos-en-vivo')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'recuerdos' }, loadSavedMemory)
+        .subscribe();
+}
 
 async function showAdminPanel() {
+    if (!adminLogin || !memoryTools) return;
+
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
         memoryTools.hidden = false;
         adminLogin.hidden = true;
+        loadVisits();
     }
 }
 
@@ -139,7 +178,7 @@ if (memorySelect) {
     });
 }
 
-adminLogin.addEventListener('submit', async (event) => {
+if (adminLogin) adminLogin.addEventListener('submit', async (event) => {
     event.preventDefault();
     loginStatus.textContent = 'Comprobando acceso...';
     const { error } = await supabaseClient.auth.signInWithPassword({
@@ -160,9 +199,10 @@ adminLogin.addEventListener('submit', async (event) => {
     adminLogin.hidden = true;
     memoryTools.hidden = false;
     loginStatus.textContent = '';
+    loadVisits();
 });
 
-photoInput.addEventListener('change', async () => {
+if (photoInput) photoInput.addEventListener('change', async () => {
     const [photo] = photoInput.files;
     if (!photo) return;
 
@@ -183,7 +223,7 @@ photoInput.addEventListener('change', async () => {
     }
 });
 
-memorySave.addEventListener('click', async () => {
+if (memorySave) memorySave.addEventListener('click', async () => {
     memoryStatus.textContent = 'Guardando recuerdo...';
     let photoUrl = null;
 
@@ -215,9 +255,9 @@ memorySave.addEventListener('click', async () => {
         : 'Recuerdo guardado en Supabase.';
 });
 
-memoryDownload.addEventListener('click', () => {
+if (memoryDownload) memoryDownload.addEventListener('click', () => {
     const memory = {
-        texto: memoryText.value,
+        texto: memoryText ? memoryText.value : '',
         foto: selectedPhoto,
         guardadoEn: new Date().toISOString()
     };
@@ -229,7 +269,7 @@ memoryDownload.addEventListener('click', () => {
     link.download = 'nuestro-recuerdo.json';
     link.click();
     URL.revokeObjectURL(link.href);
-    memoryStatus.textContent = 'El archivo JSON se descargó correctamente.';
+    if (memoryStatus) memoryStatus.textContent = 'El archivo JSON se descargó correctamente.';
 });
 
 if (letterButton) {

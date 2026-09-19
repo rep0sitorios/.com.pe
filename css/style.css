@@ -220,7 +220,7 @@ h1 em {
     position: relative;
     z-index: 1;
     aspect-ratio: 4 / 5;
-    background: linear-gradient(140deg, rgba(18, 15, 18, .05), rgba(100, 29, 55, .5)), url('../imagenes/pareja.svg') center / cover;
+    background: linear-gradient(140deg, rgba(18, 15, 18, .05), rgba(100, 29, 55, .5)), url('../imagenes/pareja.jpg') center / cover;
     filter: saturate(.8);
 }
 
@@ -880,6 +880,48 @@ h2 {
     margin: 0;
     color: var(--smoke);
     font-size: 12px;
+}
+
+.visits-panel {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+}
+
+.visits-list {
+    display: grid;
+    gap: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.visit-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--paper);
+    background: rgba(255, 247, 250, .04);
+    font-size: 12px;
+}
+
+.visit-row time {
+    color: var(--smoke);
+}
+
+.visit-row.visit-admin {
+    border-color: #e24a5b;
+    color: #ffb0b8;
+    background: rgba(226, 74, 91, .14);
+}
+
+.visit-row.visit-admin time {
+    color: #ffb0b8;
 }
 
 .memory-links {

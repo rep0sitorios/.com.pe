@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#120f12">
     <meta name="description" content="Un pequeño rincón hecho con amor.">
-    <title>Para mi persona favorita</title>
+    <title>Para mi traviesa favorita ♥️</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <!-- <link rel="stylesheet" href="css/flores-amarillas.css"> -->
 </head>
 <body>
     <main class="site-shell">
@@ -20,9 +21,9 @@
 
         <section class="hero" id="inicio">
             <div class="hero-copy">
-                <p class="eyebrow">Para la niña que amo</p>
+                <p class="eyebrow">Para la caperucita que amo ♥️</p>
                 <h1>Eres mi<br>lugar<br><em>favorito.</em></h1>
-                <p class="intro">Este rinconcito es para recordarte que, entre todos los días posibles, mi mejor coincidencia siempre serás tú.</p>
+                <p class="intro">Oye, sCaperusita… cuidado que si sigues tan linda, voy a dejar de ser el lobo y me convierto en tu sombra para no despegarme de ti 🐺😏❤️</p>
                 <div class="actions">
                     <a class="button button-primary" href="#carta">Leer mi carta <span aria-hidden="true">↗</span></a>
                     <a class="button button-quiet" href="#historia">Nuestra historia</a>
@@ -30,74 +31,44 @@
             </div>
             <div class="portrait-wrap">
                 <div class="portrait" role="img" aria-label="Una pareja compartiendo un momento especial"></div>
-                <div class="portrait-label"><span>♥</span> mi persona favorita</div>
+                <div class="portrait-label"><span>♥</span> mi caperucita favorita</div>
             </div>
-            <div class="scroll-cue">baja despacio</div>
+            <!-- <div class="scroll-cue"></div> -->
         </section>
 
         <section class="story" id="historia">
             <div>
-                <p class="section-kicker">Nuestro pedacito de mundo</p>
+                <p class="section-kicker">Nuestro pedacito de mundo 🌎</p>
                 <h2>Tú haces<br>bonito<br>lo cotidiano.</h2>
             </div>
             <div class="story-copy">
-                <p>No necesito una fecha especial para quererte más. Me basta con tu risa, nuestras conversaciones interminables y esa forma tuya de hacer que cualquier lugar se sienta como casa.</p>
+                <p>Caperusita… cuidado, que si sigues provocando con esa sonrisa, voy a tener que dejar de ser el lobo bueno y convertirme en el que te roba besos a escondidas 😏❤️🌹</p>
                 <p class="signature">Con todo mi amor,</p>
                 <div class="moments">
-                    <div class="moment"><div class="moment-number">01</div><div class="moment-text">La primera sonrisa que me cambió el día</div></div>
+                    <div class="moment"><div class="moment-number">01</div><div class="moment-text">Cuando te vi por primera vez… entendí que mi corazón había encontrado su lugar ❤️</div></div>
                     <div class="moment"><div class="moment-number">02</div><div class="moment-text">Todas las canciones que ahora son nuestras</div></div>
+                    <div class="moment"><div class="moment-number">03</div><div class="moment-text">Todas las canciones que ahora son nuestras</div></div>
                     <div class="moment"><div class="moment-number">∞</div><div class="moment-text">Todo lo bonito que todavía nos espera</div></div>
                 </div>
             </div>
         </section>
 
+        <!-- carta -->
         <section class="letter-section" id="carta">
             <div class="letter-top">
-                <div><p class="section-kicker">Una cartita para ti</p><h2>Para leer<br>cuando quieras<br>sentirme cerca.</h2></div>
-                <p>Guárdala cerquita. Es solo un pedacito de todo lo que siento por ti.</p>
+                <div><p class="section-kicker">Una cartita para ti ✉️</p><h2>Para leer<br>cuando quieras<br>sentirme cerca🫶.</h2></div>
+                <p>Guárdala cerquita ♥️. Es solo un pedacito de todo lo que siento por ti😘.</p>
             </div>
             <div class="letter-card">
-                <p class="salutation" id="letterSalutation">Mi amor,</p>
+                <p class="salutation" id="letterSalutation"></p>
                 <div class="letter-body" id="letterBody">
-                    <p id="letterParagraphOne">Gracias por ser mi calma en los días ruidosos y mi alegría en los días simples. Te elijo en cada versión de nosotros, en cada aventura y en cada “¿qué hacemos hoy?” que termina convirtiéndose en un recuerdo.</p>
-                    <p id="letterParagraphTwo">Te quiero más de lo que cabe en esta página. Y aun así, quería intentarlo.</p>
+                    <p id="letterParagraphOne"></p>
+                    <p id="letterParagraphTwo"></p>
                 </div>
                 <button class="button" id="letterButton" type="button">Abrir carta <span aria-hidden="true">♡</span></button>
             </div>
         </section>
-
-        <section class="memory-section" id="recuerdo">
-            <div class="memory-heading">
-                <p class="section-kicker">Nuestro espacio</p>
-                <h2>Escribe algo<br><em>para nosotros.</em></h2>
-                <p>Deja aquí unas palabras o una foto que quieras guardar cerquita.</p>
-            </div>
-            <form class="admin-login" id="adminLogin">
-                <span class="memory-label">Panel privado</span>
-                <input id="adminEmail" type="email" placeholder="Tu correo" required>
-                <input id="adminPassword" type="password" placeholder="Tu contraseña" required>
-                <button class="button button-quiet" type="submit">Entrar</button>
-                <p class="memory-status" id="loginStatus" role="status"></p>
-            </form>
-            <div class="memory-tools" id="memoryTools" hidden>
-                <label class="memory-field">
-                    <span>Tu mensaje</span>
-                    <textarea id="memoryText" placeholder="Escribe aquí lo que sientes..."></textarea>
-                </label>
-                <div class="memory-photo">
-                    <span class="memory-label">Una foto especial</span>
-                    <label class="photo-upload" for="photoInput">
-                        <span class="upload-icon" aria-hidden="true">+</span>
-                        <span id="photoLabel">Elegir una foto</span>
-                    </label>
-                    <input id="photoInput" type="file" accept="image/*">
-                    <div class="photo-preview" id="photoPreview" aria-live="polite"></div>
-                </div>
-                <button class="button button-primary memory-save" id="memorySave" type="button">Guardar recuerdo <span aria-hidden="true">♥</span></button>
-                <button class="button button-quiet memory-download" id="memoryDownload" type="button">Descargar JSON <span aria-hidden="true">↓</span></button>
-                <p class="memory-status" id="memoryStatus" role="status"></p>
-            </div>
-        </section>
+        <!-- fin de la carta -->
 
         <nav class="memory-links" aria-label="Recuerdos">
             <a class="button button-quiet" href="enviar.html">Dejar un recuerdo <span aria-hidden="true">↗</span></a>

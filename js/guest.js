@@ -2,6 +2,11 @@ const supabaseUrl = 'https://spzmijgoasqwvpvhlrrq.supabase.co';
 const supabaseKey = 'sb_publishable_YPZo0GS3Cfz_Xp6JE9ol9A_37rzZYtf';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+const visitPage = document.querySelector('#guestForm') ? 'enviar' : 'recuerdos';
+supabaseClient.from('visitas').insert({ pagina: visitPage }).then(({ error }) => {
+    if (error) console.error('No se pudo registrar la visita:', error);
+});
+
 function compressPhoto(photo) {
     return new Promise((resolve, reject) => {
         const image = new Image();
