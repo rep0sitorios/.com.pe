@@ -917,3 +917,134 @@ footer {
         letter-spacing: 8px;
     }
 }
+
+@media (max-width: 760px) {
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    .site-shell {
+        min-width: 0;
+        background-attachment: scroll;
+    }
+
+    .nav-note {
+        max-width: 180px;
+        font-size: 10px;
+        line-height: 1.3;
+        text-align: right;
+    }
+
+    .hero {
+        min-height: auto;
+        padding-right: 24px;
+        padding-bottom: 70px;
+        padding-left: 24px;
+    }
+
+    h1 {
+        font-size: clamp(3.25rem, 18vw, 5.2rem);
+    }
+
+    .intro {
+        margin-top: 24px;
+        font-size: 15px;
+    }
+
+    .actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .actions .button,
+    .memory-links .button {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .portrait-wrap {
+        width: min(82vw, 360px);
+    }
+
+    .portrait-label {
+        right: -8px;
+        max-width: calc(100% - 8px);
+        padding: 11px 14px;
+        font-size: 11px;
+    }
+
+    .moments {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        border-top: 0;
+    }
+
+    .moment,
+    .moment:last-child {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+    }
+
+    .letter-card {
+        padding: 24px 20px;
+    }
+
+    .letter-body p {
+        font-size: 22px;
+    }
+
+    .memory-section {
+        gap: 36px;
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+
+    .guest-section h1,
+    .memories-page h1 {
+        font-size: clamp(3.1rem, 16vw, 5rem);
+    }
+
+    .memory-item {
+        padding: 12px;
+    }
+
+    .memory-item p {
+        font-size: 19px;
+    }
+
+    .memory-links {
+        align-items: stretch;
+        flex-direction: column;
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+}
+
+@media (max-width: 420px) {
+    nav,
+    .hero,
+    .story,
+    .letter-section,
+    .memory-section,
+    footer {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+
+    .monogram {
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .moments {
+        grid-template-columns: 1fr;
+    }
+
+    .moment,
+    .moment + .moment {
+        padding: 16px;
+    }
+}
