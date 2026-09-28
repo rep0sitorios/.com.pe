@@ -1,20 +1,19 @@
 const supabaseUrl = 'https://spzmijgoasqwvpvhlrrq.supabase.co';
 const supabaseKey = 'sb_publishable_YPZo0GS3Cfz_Xp6JE9ol9A_37rzZYtf';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 
-const visitPage = document.querySelector('#guestForm') ? 'enviar' : 'recuerdos';
-supabaseClient.from('visitas').insert({ pagina: visitPage }).then(({ error }) => {
-    if (error) console.error('No se pudo registrar la visita:', error);
-});
+async function registerPageVisit(page) {
+    const { error } = await supabaseClient.functions.invoke('registrar-visita', { body: { pagina: page } });
+    if (error) console.info('El registro de visitas estará disponible al publicar la función de Supabase.');
+}
 
 function compressPhoto(photo) {
     return new Promise((resolve, reject) => {
         const image = new Image();
         const imageUrl = URL.createObjectURL(photo);
-
         image.addEventListener('load', () => {
-            const maxWidth = 1600;
-            const scale = Math.min(1, maxWidth / image.width);
+            const scale = Math.min(1, 1600 / image.width);
             const canvas = document.createElement('canvas');
             canvas.width = Math.round(image.width * scale);
             canvas.height = Math.round(image.height * scale);
@@ -22,119 +21,77 @@ function compressPhoto(photo) {
             URL.revokeObjectURL(imageUrl);
             resolve(canvas.toDataURL('image/webp', .8));
         });
-
-        image.addEventListener('error', () => {
-            URL.revokeObjectURL(imageUrl);
-            reject(new Error('No se pudo procesar la foto.'));
-        });
+        image.addEventListener('error', () => { URL.revokeObjectURL(imageUrl); reject(new Error('No se pudo procesar la foto.')); });
         image.src = imageUrl;
     });
 }
 
 const guestForm = document.querySelector('#guestForm');
+registerPageVisit(guestForm ? 'enviar' : 'recuerdos');
+
 if (guestForm) {
     const guestText = document.querySelector('#guestText');
     const guestPhotoInput = document.querySelector('#guestPhotoInput');
     const guestPhotoLabel = document.querySelector('#guestPhotoLabel');
     const guestPhotoPreview = document.querySelector('#guestPhotoPreview');
     const guestStatus = document.querySelector('#guestStatus');
+    const submitButton = guestForm.querySelector('[type="submit"]');
     let compressedPhoto = null;
 
     guestPhotoInput.addEventListener('change', async () => {
         const [photo] = guestPhotoInput.files;
-        if (!photo) return;
-
+        compressedPhoto = null;
+        guestPhotoPreview.innerHTML = '';
+        if (!photo) { guestPhotoLabel.textContent = 'Elegir una foto'; return; }
         guestPhotoLabel.textContent = photo.name;
         guestStatus.textContent = 'Optimizando la foto...';
         try {
             compressedPhoto = await compressPhoto(photo);
             guestPhotoPreview.innerHTML = `<img src="${compressedPhoto}" alt="Vista previa del recuerdo">`;
             guestStatus.textContent = 'Foto lista para enviar.';
-        } catch (error) {
-            guestStatus.textContent = error.message;
-        }
+        } catch (error) { guestStatus.textContent = error.message; }
     });
 
     guestForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (!compressedPhoto) {
-            guestStatus.textContent = 'Selecciona una foto antes de enviar.';
+        const texto = guestText.value.trim();
+        if (!texto && !compressedPhoto) {
+            guestStatus.textContent = 'Agrega un mensaje, una foto o ambos antes de enviar.';
             return;
         }
-
+        submitButton.disabled = true;
         guestStatus.textContent = 'Enviando recuerdo...';
-        const photoBlob = await fetch(compressedPhoto).then((response) => response.blob());
-        const photoPath = `recuerdos/${crypto.randomUUID()}.webp`;
-        const { error: uploadError } = await supabaseClient.storage
-            .from('fotos')
-            .upload(photoPath, photoBlob, { contentType: 'image/webp', upsert: false });
-
-        if (uploadError) {
-            guestStatus.textContent = `No se pudo subir la foto: ${uploadError.message}`;
-            return;
+        let photoUrl = null;
+        if (compressedPhoto) {
+            const photoBlob = await fetch(compressedPhoto).then((response) => response.blob());
+            const photoPath = `recuerdos/${crypto.randomUUID()}.webp`;
+            const { error: uploadError } = await supabaseClient.storage.from('fotos').upload(photoPath, photoBlob, { contentType: 'image/webp', upsert: false });
+            if (uploadError) {
+                submitButton.disabled = false;
+                guestStatus.textContent = `No se pudo subir la foto: ${uploadError.message}`;
+                return;
+            }
+            photoUrl = supabaseClient.storage.from('fotos').getPublicUrl(photoPath).data.publicUrl;
         }
-
-        const photoUrl = supabaseClient.storage.from('fotos').getPublicUrl(photoPath).data.publicUrl;
-        const { error: saveError } = await supabaseClient.from('recuerdos').insert({
-            texto: guestText.value,
-            foto_url: photoUrl
-        });
-
-        if (saveError) {
-            guestStatus.textContent = `No se pudo guardar el recuerdo: ${saveError.message}`;
-            return;
-        }
-
+        const { error } = await supabaseClient.from('recuerdos').insert({ texto, ...(photoUrl ? { foto_url: photoUrl } : {}) });
+        submitButton.disabled = false;
+        if (error) { guestStatus.textContent = `No se pudo guardar el recuerdo: ${error.message}`; return; }
         guestForm.reset();
         compressedPhoto = null;
         guestPhotoPreview.innerHTML = '';
         guestPhotoLabel.textContent = 'Elegir una foto';
-        guestStatus.textContent = 'Recuerdo enviado. Ya no se puede modificar desde aquí.';
+        guestStatus.textContent = 'Recuerdo enviado.';
     });
 }
 
 const memoriesList = document.querySelector('#memoriesList');
 if (memoriesList) {
     async function loadMemories() {
-        const { data: memories, error } = await supabaseClient
-            .from('recuerdos')
-            .select('id, texto, foto_url, creado_en')
-            .order('creado_en', { ascending: false });
-
-        if (error) {
-            memoriesList.innerHTML = '<p class="memory-status">No se pudieron cargar los recuerdos.</p>';
-            return;
-        }
-
-        if (!memories.length) {
-            memoriesList.innerHTML = '<p class="memory-status">Todavía no hay recuerdos.</p>';
-            return;
-        }
-
-        memoriesList.innerHTML = memories.map((memory) => `
-            <article class="memory-item">
-                ${memory.foto_url ? `<img src="${memory.foto_url}" alt="Foto de un recuerdo compartido">` : ''}
-                <div>
-                    <p>${escapeHtml(memory.texto || '')}</p>
-                    <time datetime="${memory.creado_en}">${new Date(memory.creado_en).toLocaleDateString('es-ES')}</time>
-                </div>
-            </article>
-        `).join('');
+        const { data: memories, error } = await supabaseClient.from('recuerdos').select('id, texto, foto_url, creado_en').order('creado_en', { ascending: false });
+        if (error) { memoriesList.innerHTML = '<p class="memory-status">No se pudieron cargar los recuerdos.</p>'; return; }
+        if (!memories.length) { memoriesList.innerHTML = '<p class="memory-status">Todavía no hay recuerdos.</p>'; return; }
+        memoriesList.innerHTML = memories.map((memory) => `<article class="memory-item">${memory.foto_url ? `<img src="${escapeHtml(memory.foto_url)}" alt="Foto de un recuerdo compartido">` : ''}<div>${memory.texto ? `<p>${escapeHtml(memory.texto)}</p>` : '<p>Un recuerdo en imagen.</p>'}<time datetime="${escapeHtml(memory.creado_en)}">${new Date(memory.creado_en).toLocaleDateString('es-PE')}</time></div></article>`).join('');
     }
-
-    supabaseClient
-        .channel('recuerdos-publicos')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recuerdos' }, loadMemories)
-        .subscribe();
+    supabaseClient.channel('recuerdos-publicos').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recuerdos' }, loadMemories).subscribe();
     loadMemories();
-}
-
-function escapeHtml(value) {
-    return value.replace(/[&<>'"]/g, (character) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-    }[character]));
 }

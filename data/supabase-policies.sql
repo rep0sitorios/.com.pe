@@ -1,6 +1,19 @@
--- Ejecutar en Supabase > SQL Editor
+-- Ejecutar en Supabase > SQL Editor.
+-- Este script conserva los recuerdos y la carta inferior existentes.
 
+-- La tabla de recuerdos debe existir antes de ejecutar este archivo.
 alter table public.recuerdos enable row level security;
+alter table public.recuerdos alter column texto set default '';
+alter table public.recuerdos alter column texto set not null;
+
+do $$
+begin
+    if not exists (select 1 from pg_constraint where conname = 'recuerdos_contenido_requerido') then
+        alter table public.recuerdos add constraint recuerdos_contenido_requerido
+            check (length(btrim(texto)) > 0 or foto_url is not null) not valid;
+    end if;
+end
+$$;
 
 drop policy if exists "Lectura pública" on public.recuerdos;
 drop policy if exists "Solo usuarios autenticados pueden guardar" on public.recuerdos;
@@ -8,113 +21,73 @@ drop policy if exists "Solo usuarios autenticados pueden modificar" on public.re
 drop policy if exists "Cualquiera puede ver recuerdos" on public.recuerdos;
 drop policy if exists "Cualquiera puede enviar recuerdos" on public.recuerdos;
 drop policy if exists "Solo administrador autenticado puede modificar" on public.recuerdos;
-
-create policy "Cualquiera puede ver recuerdos"
-on public.recuerdos
-for select
-using (true);
-
-create policy "Cualquiera puede enviar recuerdos"
-on public.recuerdos
-for insert
-to anon, authenticated
-with check (true);
-
-create policy "Solo administrador autenticado puede modificar"
-on public.recuerdos
-for update
-to authenticated
-using (true)
-with check (true);
-
--- No se crea ninguna política de DELETE: los usuarios no pueden borrar recuerdos.
+drop policy if exists "Usuarios autenticados pueden modificar recuerdos" on public.recuerdos;
+create policy "Cualquiera puede ver recuerdos" on public.recuerdos for select using (true);
+create policy "Cualquiera puede enviar recuerdos" on public.recuerdos for insert to anon, authenticated with check (length(btrim(texto)) > 0 or foto_url is not null);
+create policy "Usuarios autenticados pueden modificar recuerdos" on public.recuerdos for update to authenticated using (true) with check (true);
 
 drop policy if exists "Cualquiera puede subir fotos" on storage.objects;
+create policy "Cualquiera puede subir fotos" on storage.objects for insert to anon, authenticated with check (bucket_id = 'fotos');
 
-create policy "Cualquiera puede subir fotos"
-on storage.objects
-for insert
-to anon, authenticated
-with check (bucket_id = 'fotos');
-
--- El bucket fotos debe permanecer público para mostrar las imágenes.
-
-do $$
-begin
-	if not exists (
-		select 1
-		from pg_publication_tables
-		where pubname = 'supabase_realtime'
-		  and schemaname = 'public'
-		  and tablename = 'recuerdos'
-	) then
-		alter publication supabase_realtime add table public.recuerdos;
-	end if;
-end
-$$;
-
+-- Carta fija de la parte inferior.
 create table if not exists public.contenido_sitio (
-	id boolean primary key default true check (id),
-	saludo text not null default 'Mi amor,',
-	parrafo_uno text not null default '',
-	parrafo_dos text not null default '',
-	actualizado_en timestamp with time zone default now()
+    id boolean primary key default true check (id),
+    saludo text not null default 'Mi amor,',
+    parrafo_uno text not null default '',
+    parrafo_dos text not null default '',
+    actualizado_en timestamp with time zone default now()
 );
-
 alter table public.contenido_sitio enable row level security;
-
 drop policy if exists "Cualquiera puede leer la carta" on public.contenido_sitio;
 drop policy if exists "Solo administrador puede modificar la carta" on public.contenido_sitio;
-
-create policy "Cualquiera puede leer la carta"
-on public.contenido_sitio
-for select
-using (true);
-
-create policy "Solo administrador puede modificar la carta"
-on public.contenido_sitio
-for update
-to authenticated
-using (true)
-with check (true);
-
+drop policy if exists "Usuarios autenticados pueden modificar la carta" on public.contenido_sitio;
+create policy "Cualquiera puede leer la carta" on public.contenido_sitio for select using (true);
+create policy "Usuarios autenticados pueden modificar la carta" on public.contenido_sitio for update to authenticated using (true) with check (true);
 insert into public.contenido_sitio (id, saludo, parrafo_uno, parrafo_dos)
-values (true, 'Mi amor,', 'Gracias por ser mi calma en los días ruidosos y mi alegría en los días simples. Te elijo en cada versión de nosotros, en cada aventura y en cada “¿qué hacemos hoy?” que termina convirtiéndose en un recuerdo.', 'Te quiero más de lo que cabe en esta página. Y aun así, quería intentarlo.')
+values (true, 'Mi amor,', 'Gracias por ser mi calma en los días ruidosos y mi alegría en los días simples. Te elijo en cada versión de nosotros.', 'Te quiero más de lo que cabe en esta página. Y aun así, quería intentarlo.')
 on conflict (id) do nothing;
 
-do $$
-begin
-	if not exists (
-		select 1
-		from pg_publication_tables
-		where pubname = 'supabase_realtime'
-		  and schemaname = 'public'
-		  and tablename = 'contenido_sitio'
-	) then
-		alter publication supabase_realtime add table public.contenido_sitio;
-	end if;
-end
-$$;
-
-create table if not exists public.visitas (
-	id bigint generated by default as identity primary key,
-	pagina text not null,
-	visitado_en timestamp with time zone not null default now()
+-- Cartas que aparecen en "Nuestro pedacito de mundo".
+create table if not exists public.cartas_centro (
+    id uuid primary key default gen_random_uuid(),
+    titulo text not null check (length(btrim(titulo)) between 1 and 100),
+    contenido text not null check (length(btrim(contenido)) between 1 and 5000),
+    creado_en timestamp with time zone not null default now()
 );
+alter table public.cartas_centro enable row level security;
+drop policy if exists "Cualquiera puede leer cartas del centro" on public.cartas_centro;
+drop policy if exists "Usuarios autenticados pueden crear cartas del centro" on public.cartas_centro;
+drop policy if exists "Usuarios autenticados pueden modificar cartas del centro" on public.cartas_centro;
+drop policy if exists "Usuarios autenticados pueden eliminar cartas del centro" on public.cartas_centro;
+create policy "Cualquiera puede leer cartas del centro" on public.cartas_centro for select using (true);
+create policy "Usuarios autenticados pueden crear cartas del centro" on public.cartas_centro for insert to authenticated with check (true);
+create policy "Usuarios autenticados pueden modificar cartas del centro" on public.cartas_centro for update to authenticated using (true) with check (true);
+create policy "Usuarios autenticados pueden eliminar cartas del centro" on public.cartas_centro for delete to authenticated using (true);
 
+-- Historial de visitas: la IP se escribe desde la función registrar-visita.
+create table if not exists public.visitas (
+    id bigint generated by default as identity primary key,
+    pagina text not null,
+    ip inet,
+    visitado_en timestamp with time zone not null default now()
+);
+alter table public.visitas add column if not exists ip inet;
 alter table public.visitas enable row level security;
-
 drop policy if exists "Cualquiera puede registrar una visita" on public.visitas;
 drop policy if exists "Solo administrador puede ver las visitas" on public.visitas;
+drop policy if exists "Usuarios autenticados pueden ver visitas" on public.visitas;
+drop policy if exists "Usuarios autenticados pueden eliminar visitas" on public.visitas;
+create policy "Usuarios autenticados pueden ver visitas" on public.visitas for select to authenticated using (true);
+create policy "Usuarios autenticados pueden eliminar visitas" on public.visitas for delete to authenticated using (true);
 
-create policy "Cualquiera puede registrar una visita"
-on public.visitas
-for insert
-to anon, authenticated
-with check (pagina in ('inicio', 'enviar', 'recuerdos', 'admin'));
-
-create policy "Solo administrador puede ver las visitas"
-on public.visitas
-for select
-to authenticated
-using (true);
+-- Realtime para actualizar cartas y recuerdos sin recargar la página.
+do $$
+begin
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'recuerdos') then
+        alter publication supabase_realtime add table public.recuerdos;
+    end if;
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'cartas_centro') then
+        alter publication supabase_realtime add table public.cartas_centro;
+    end if;
+end
+$$;
