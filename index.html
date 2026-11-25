@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#120B1F" />
+    <meta name="description" content="Un pequeño rincón para nuestra historia." />
+    <title>Nuestro pedacito de mundo ♥️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <main class="site-shell">
+        <nav>
+            <a class="monogram" href="#inicio" aria-label="Volver al inicio">♥</a>
+            <span class="nav-note">nuestro pedacito de mundo</span>
+            <div class="nav-links"><a href="#historia">Historia</a><a href="#carta">Carta</a><a href="recuerdos.html">Recuerdos</a></div>
+        </nav>
+
+        <section class="hero" id="inicio">
+            <div class="hero-copy">
+                <p class="eyebrow">🌹 Para la caperucita que amo</p>
+                <h1>Mi lugar<br />favorito es<br /><em>contigo.</em></h1>
+                <p class="intro">
+                    ✨ Un rincón para guardar los días simples, las risas y todo lo
+                    bonito que construimos juntos.
+                </p>
+                <div class="actions">
+                    <a class="button button-primary" href="#carta">Leer mi carta <span aria-hidden="true">↗</span></a>
+                    <a class="button button-quiet" href="#historia">Nuestra historia</a>
+                </div>
+            </div>
+            <div class="portrait-wrap">
+                <div class="portrait" role="img" aria-label="Una pareja compartiendo un momento especial"></div>
+                <div class="portrait-label">
+                    <span>♥</span> mi caperucita favorita
+                </div>
+            </div>
+            <!-- <div class="scroll-cue"></div> -->
+        </section>
+
+        <section class="explore" aria-label="Explorar nuestro espacio">
+            <div class="explore-heading"><p class="section-kicker">Un espacio para volver</p><h2>Todo lo nuestro,<br /><em>en un solo lugar.</em></h2><p>Cartas, fotografías y pequeños momentos que merecen quedarse.</p></div>
+            <div class="explore-grid">
+                <a class="explore-card" href="#historia"><span>01 / NUESTRA HISTORIA</span><strong>Palabras que nos acercan</strong><p>Vuelve a las cartas y a esos detalles que hacen especial lo cotidiano.</p><b>Explorar cartas →</b></a>
+                <a class="explore-card" href="recuerdos.html"><span>02 / NUESTROS RECUERDOS</span><strong>Momentos para guardar</strong><p>Un álbum de mensajes y fotografías para mirar siempre que quieras.</p><b>Ver recuerdos →</b></a>
+                <a class="explore-card" href="enviar.html"><span>03 / UN NUEVO CAPÍTULO</span><strong>Deja algo de ti</strong><p>Comparte una foto o unas palabras y sigamos escribiendo nuestra historia.</p><b>Crear recuerdo →</b></a>
+            </div>
+        </section>
+        <section class="story" id="historia">
+            <div>
+                <p class="section-kicker">💛 Nuestro pedacito de mundo</p>
+                <h2>Tú haces<br />bonito<br />lo cotidiano.</h2>
+            </div>
+            <div class="story-copy">
+                <p>
+                    Caperucita, contigo hasta los días normales se vuelven una historia
+                    que quiero recordar. Este espacio guarda las cartas que vamos
+                    escribiendo en el camino. 🌷
+                </p>
+                <p class="signature">Con todo mi amor, 💌</p>
+                <div class="moments">
+                    <div class="moment">
+                        <div class="moment-number">01</div>
+                        <div class="moment-text">
+                            Cuando te vi por primera vez entendí que mi corazón había
+                            encontrado su lugar. 🥰
+                        </div>
+                    </div>
+                    <div class="moment">
+                        <div class="moment-number">02</div>
+                        <div class="moment-text">
+                            A tu lado quiero que el tiempo vaya más despacio. ⏳
+                        </div>
+                    </div>
+                    <div class="moment">
+                        <div class="moment-number">03</div>
+                        <div class="moment-text">
+                            Te pienso a cada rato y sonrío cuando lo hago. 😊
+                        </div>
+                    </div>
+                    <div class="moment">
+                        <div class="moment-number">∞</div>
+                        <div class="moment-text">
+                            Tu forma de amarme es mi favorita. 💛
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="story-letters" id="storyLetters" aria-live="polite">
+                <p class="memory-status">Cargando cartas...</p>
+            </div>
+        </section>
+
+        <!-- carta -->
+        <section class="letter-section" id="carta">
+            <div class="letter-top">
+                <div>
+                    <p class="section-kicker">🎁 Un detalle para ti</p>
+                    <h2>Para leer<br />cuando quieras<br />sentirme cerca.</h2>
+                </div>
+                <p>
+                    Guárdalo cerquita. Es solo un pedacito de todo lo que siento por ti.
+                    💌
+                </p>
+            </div>
+            <div class="letter-card">
+                <p class="salutation" id="letterSalutation"></p>
+                <div class="letter-body" id="letterBody">
+                    <p id="letterParagraphOne"></p>
+                    <p id="letterParagraphTwo"></p>
+                </div>
+                <button class="button" id="letterButton" type="button" aria-expanded="false" aria-controls="letterBody">
+                    Abrir carta <span aria-hidden="true">♡</span>
+                </button>
+            </div>
+        </section>
+        <!-- fin de la carta -->
+
+        <nav class="memory-links" aria-label="Recuerdos">
+            <a class="button button-quiet" href="enviar.html">Dejar un recuerdo <span aria-hidden="true">↗</span></a>
+            <a class="button button-quiet" href="recuerdos.html">Ver recuerdos <span aria-hidden="true">♡</span></a>
+        </nav>
+
+        <footer>
+            <span>Para la caperusita que amo · 2026</span>
+            <button class="heart-button" id="heartButton" type="button">
+                <span>♥</span> <b id="heartText">te quiero</b>
+            </button>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
